@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #3b82f6;
+    --primary-dark: #1d4ed8;
+    --secondary-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+}
+
+.table-container {
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.editable-cell {
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.editable-cell:hover {
+    background-color: #dbeafe !important;
+}
+
+.editable-cell:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+    background-color: #fef3c7 !important;
+}
+
+.negative-consumption {
+    background-color: #fef2f2 !important;
+    color: var(--danger-color) !important;
+    font-weight: 600;
+}
+
+.file-drop-zone {
+    border: 2px dashed var(--gray-300);
+    transition: all 0.3s ease;
+}
+
+.file-drop-zone.dragover {
+    border-color: var(--primary-color);
+    background-color: var(--gray-50);
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.toast {
+    max-width: 400px;
+    padding: 16px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.success {
+    background-color: var(--secondary-color);
+}
+
+.toast.error {
+    background-color: var(--danger-color);
+}
+
+.toast.warning {
+    background-color: var(--warning-color);
+}
+
+.pdf-content {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.pdf-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.pdf-content th,
+.pdf-content td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.pdf-content th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.accessibility-skip {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.accessibility-skip:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 8px 16px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+/* Estilos para as abas da pré-visualização */
+.preview-tab {
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    padding: 1rem 0.5rem;
+    margin-right: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gray-500);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.preview-tab:hover {
+    color: var(--gray-700);
+    border-color: var(--gray-300);
+}
+
+.preview-tab.active {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+
+@media print {
+    body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+    
+    .table-container {
+        overflow: visible !important;
+        max-height: none !important;
+    }
+    
+    table {
+        page-break-inside: avoid;
+    }
+}
+
+/* ESTILO ADICIONADO: Para o checkbox de área comum na tabela */
+.common-area-checkbox {
+    cursor: pointer;
+    width: 1.25rem;  /* 20px */
+    height: 1.25rem; /* 20px */
+}

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Medições - Versão Integrada</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <a href="#main-content" class="accessibility-skip">Pular para o conteúdo principal</a>
+    
+    <div id="toast-container"></div>
+
+    <!-- TELA 1: SELEÇÃO DE CONDOMÍNIO -->
+    <div id="condo-selector-screen">
+        <div class="container mx-auto px-4 py-10">
+            <header class="mb-10 text-center">
+                <h1 class="text-4xl font-bold text-gray-900 flex items-center justify-center"><i class="fas fa-tasks text-blue-600 mr-4"></i>Gestor de Relatórios de Consumo</h1>
+                <p class="text-gray-600 mt-2 text-lg">Selecione um condomínio para iniciar</p>
+            </header>
+            <main id="condo-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="col-span-full text-center p-10 bg-white rounded-lg shadow">
+                    <div class="loading-spinner mx-auto" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                    <p class="mt-4 text-gray-600 font-medium">Buscando condomínios no Google Drive...</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- TELA 2: DASHBOARD PRINCIPAL (INICIALMENTE OCULTO ) -->
+    <div id="main-dashboard-screen" class="hidden">
+        <div class="container mx-auto px-4 py-6 max-w-7xl">
+            <header class="mb-8">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h1 id="dashboard-title" class="text-3xl font-bold text-gray-900 flex items-center"></h1>
+                            <p class="text-gray-600 mt-2">Sistema para gestão de medições de consumo</p>
+                        </div>
+                        <button id="back-to-selector" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium flex items-center no-print">
+                            <i class="fas fa-arrow-left mr-2"></i>Trocar Condomínio
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <section class="mb-8" aria-label="Configuração do sistema">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Card 1: Carregar Medições -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center"><i class="fas fa-file-excel text-green-600 mr-2"></i>1. Carregar Medições</h2>
+                        <div class="file-drop-zone rounded-lg p-6 text-center cursor-pointer" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                            <p class="text-gray-600 font-medium">Clique ou arraste o arquivo</p>
+                            <p class="text-sm text-gray-500 mt-1">Formato: .xlsx</p>
+                        </div>
+                        <input type="file" id="fileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden" aria-label="Selecionar arquivo de medições">
+                        <div id="file-feedback" class="mt-3 text-sm" role="status" aria-live="polite"></div>
+                    </div>
+
+                    <!-- Card 2: Logo (Opcional) -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center"><i class="fas fa-image text-purple-600 mr-2"></i>2. Logo (Opcional)</h2>
+                        <div class="file-drop-zone rounded-lg p-6 text-center cursor-pointer" onclick="document.getElementById('logoInput').click()">
+                            <i class="fas fa-image text-4xl text-gray-400 mb-3"></i>
+                            <p class="text-gray-600 font-medium">Clique ou arraste a imagem</p>
+                            <p class="text-sm text-gray-500 mt-1">Formato: PNG, JPG</p>
+                        </div>
+                        <input type="file" id="logoInput" accept="image/png,image/jpeg,image/jpg" class="hidden" aria-label="Selecionar logo da empresa">
+                        <div id="logo-feedback" class="mt-3 text-sm" role="status" aria-live="polite"></div>
+                    </div>
+
+                    <!-- Card 3: Dados da Simulação -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center"><i class="fas fa-calculator text-blue-600 mr-2"></i>3. Dados da Simulação</h2>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="periodo-de" class="block text-sm font-medium text-gray-700 mb-1">Período De</label>
+                                    <input type="date" id="periodo-de" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="periodo-ate" class="block text-sm font-medium text-gray-700 mb-1">Período Até</label>
+                                    <input type="date" id="periodo-ate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="proxima-leitura" class="block text-sm font-medium text-gray-700 mb-1">Próxima Leitura</label>
+                                <input type="date" id="proxima-leitura" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="tarifa-energia" class="block text-sm font-medium text-gray-700 mb-1">Tarifa (R$/m³)</label>
+                                <input type="text" id="tarifa-energia" placeholder="Ex: 10,50" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="taxa-gestao" class="block text-sm font-medium text-gray-700 mb-1">Taxa de Gestão (R$)</label>
+                                <input type="text" id="taxa-gestao" placeholder="Ex: 5,50" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="flex items-center pt-2">
+                                <input type="checkbox" id="rateio-area-comum" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="rateio-area-comum" class="ml-2 block text-sm font-medium text-gray-800">Ratear Custo da Área Comum</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div id="progress-container" class="mb-6 hidden">
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span id="progress-label" class="text-sm font-medium text-gray-700">Processando...</span>
+                        <span id="progress-text" class="text-sm text-gray-500">0%</span>
+                    </div>
+                    <div class="progress-bar"><div id="progress-fill" class="progress-bar-fill" style="width: 0%"></div></div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO DE AÇÕES ATUALIZADA -->
+            <section class="mb-8 no-print" aria-label="Ações">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex flex-wrap gap-4 items-center justify-center">
+                        <button id="preview-button" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold text-lg transition-colors duration-200 flex items-center" disabled>
+                            <i class="fas fa-eye mr-3"></i>
+                            Visualizar Simulação
+                        </button>
+                        <button id="process-button" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold text-lg transition-colors duration-200 flex items-center" disabled>
+                            <i class="fas fa-cogs mr-3"></i>
+                            Gerar Relatórios
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="download-links-section" class="mb-8 hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center"><i class="fas fa-download text-blue-600 mr-2"></i>Relatórios Prontos</h2>
+                    <div id="download-links-container" class="flex flex-wrap gap-4"></div>
+                </div>
+            </section>
+
+            <main id="main-content" tabindex="-1">
+                <!-- SEÇÃO DE PRÉ-VISUALIZAÇÃO DO RELATÓRIO (MODIFICADA) -->
+                <section id="previewContainer" class="mb-8 hidden">
+                    <div class="bg-white rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200 flex items-center justify-between no-print">
+                            <h2 class="text-xl font-semibold text-gray-900 flex items-center"><i class="fas fa-eye text-gray-600 mr-2"></i>Pré-visualização do Relatório</h2>
+                            <button id="closePreviewButton" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center" aria-label="Fechar pré-visualização">
+                                <i class="fas fa-times mr-2"></i>Fechar
+                            </button>
+                        </div>
+                        <!-- Abas de Navegação -->
+                        <div class="border-b border-gray-200 no-print">
+                            <nav id="preview-tabs" class="flex flex-wrap -mb-px px-4" aria-label="Abas"></nav>
+                        </div>
+                        <!-- Conteúdo da Aba -->
+                        <div id="preview-tab-content">
+                            <!-- O conteúdo do relatório será carregado aqui -->
+                        </div>
+                    </div>
+                </section>
+
+                <section class="mb-8" aria-label="Pré-visualização das Medições">
+                    <div class="bg-white rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-900 flex items-center"><i class="fas fa-table text-gray-600 mr-2"></i>Medições Importadas</h2>
+                            <p class="text-gray-600 mt-1">Clique nas células de leitura para editar os valores.</p>
+                        </div>
+                        <div id="reportContainer">
+                            <div class="flex flex-col items-center justify-center py-16 text-gray-500">
+                                <i class="fas fa-cloud-upload-alt text-5xl mb-4 text-gray-300"></i>
+                                <p class="text-center max-w-md">Aguardando importação do arquivo de medições...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
